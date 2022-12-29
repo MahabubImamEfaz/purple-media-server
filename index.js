@@ -52,12 +52,6 @@ async function run() {
       const comment = await commentsCollection.find(query).toArray();
       res.send(comment);
     });
-    // app.get("/allcomments", async (req, res) => {
-    //   const query = {};
-    //   const cursor = postsCollection.find(query);
-    //   const posts = await cursor.toArray();
-    //   res.send(posts);
-    // });
 
     app.post("/posts", async (req, res) => {
       const post = req.body;
@@ -95,6 +89,25 @@ async function run() {
       const result = await usersCollection.updateOne(
         filter,
         updatedUser,
+        option
+      );
+      res.send(result);
+    });
+
+    app.put("/updatelike/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const like = req.body;
+      // console.log(like);
+      const option = { upsert: true };
+      const updatedlike = {
+        $set: {
+          likes: like.like,
+        },
+      };
+      const result = await postsCollection.updateOne(
+        filter,
+        updatedlike,
         option
       );
       res.send(result);
