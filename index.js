@@ -22,19 +22,13 @@ async function run() {
   try {
     const usersCollection = client.db("socialMedia").collection("users");
     const postsCollection = client.db("socialMedia").collection("posts");
+    const commentsCollection = client.db("socialMedia").collection("comments");
 
     app.post("/users", async (req, res) => {
       const user = req.body;
       const result = await usersCollection.insertOne(user);
       res.send(result);
     });
-
-    // app.get("/details/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const query = { _id: ObjectId(id) };
-    //   const details = await postsCollection.findOne(query);
-    //   res.send(details);
-    // });
 
     app.get("/details/:id", async (req, res) => {
       const id = req.params.id;
@@ -43,13 +37,6 @@ async function run() {
       res.send(details);
     });
 
-    // app.get("/about/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const query = { _id: ObjectId(id) };
-    //   const about = await usersCollection.findOne(query);
-    //   res.send(about);
-    // });
-
     app.get("/about", async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
@@ -57,9 +44,29 @@ async function run() {
       res.send(about);
     });
 
+    //get comments on front-end
+    app.get("/comment", async (req, res) => {
+      const post_id = req.query.post_id;
+      const query = { post_id: post_id };
+
+      const comment = await commentsCollection.find(query).toArray();
+      res.send(comment);
+    });
+    // app.get("/allcomments", async (req, res) => {
+    //   const query = {};
+    //   const cursor = postsCollection.find(query);
+    //   const posts = await cursor.toArray();
+    //   res.send(posts);
+    // });
+
     app.post("/posts", async (req, res) => {
       const post = req.body;
       const result = await postsCollection.insertOne(post);
+      res.send(result);
+    });
+    app.post("/comments", async (req, res) => {
+      const comment = req.body;
+      const result = await commentsCollection.insertOne(comment);
       res.send(result);
     });
 
