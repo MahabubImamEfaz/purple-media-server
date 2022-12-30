@@ -64,6 +64,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/trending", async (req, res) => {
+      const query = {};
+      const cursor = postsCollection.find(query);
+      const trending = await cursor.limit(3).sort({ likes: -1 }).toArray();
+      res.send(trending);
+    });
+
     app.get("/allposts", async (req, res) => {
       const query = {};
       const cursor = postsCollection.find(query).sort({ _id: -1 });
